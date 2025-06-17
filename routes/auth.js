@@ -1,3 +1,6 @@
+//Created REST API endpoints with authentication using JWT and bcrypt
+
+
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
