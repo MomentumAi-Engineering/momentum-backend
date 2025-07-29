@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const User = require('../models/User');  
 const router = express.Router();
+const { sendSignupEmail } = require('../utils/emailService'); // 👈 import this
+
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
@@ -64,8 +66,10 @@ router.post('/google', async (req, res) => {
 });
 
 // ✅ Signup route
+// ✅ Signup route
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
+
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -75,6 +79,9 @@ router.post('/signup', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
+
+    // ✅ Send welcome email
+    await sendSignupEmail(email, name); // 👈 Added this line
 
     const token = jwt.sign(
       { id: newUser._id, role: newUser.role },
@@ -93,11 +100,13 @@ router.post('/signup', async (req, res) => {
         role: newUser.role
       }
     });
+
   } catch (error) {
     console.error('Error during signup:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
 
 // ✅ Login route
 router.post('/login', async (req, res) => {
