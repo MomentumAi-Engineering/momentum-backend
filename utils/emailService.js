@@ -1,6 +1,10 @@
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 
+console.log('FROM_EMAIL:', process.env.FROM_EMAIL); // should print no-reply@momntumai.com
+console.log('SENDGRID_API_KEY is present:', !!process.env.SENDGRID_API_KEY); // should print true
+
+
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const sendSignupEmail = async (to, name) => {
