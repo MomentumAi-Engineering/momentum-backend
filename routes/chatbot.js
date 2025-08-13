@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'openai/gpt-4o-mini', // ✅ Fast & free model
+        model: 'openai/gpt-4o-mini', // ✅ Fast model & free model
         messages: [
           { role: 'system', content: MOMNTUM_CONTEXT },
           { role: 'user', content: message }
