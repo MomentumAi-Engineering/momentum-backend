@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+
 const authRoutes = require('./routes/auth'); 
 
 const app = express();
@@ -17,6 +18,10 @@ app.use('/api/auth', authRoutes);
 app.get('/', (req, res) => {
   res.send('Welcome to the Momentum Backend API');
 });
+
+const chatbotRoute = require('./routes/chatbot');
+app.use('/api/chatbot', chatbotRoute);
+
 
 
 mongoose.connect(process.env.MONGO_URI)
