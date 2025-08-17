@@ -92,7 +92,7 @@ router.post('/signup', async (req, res) => {
     res.status(201).json({
       message: 'User created successfully',
       token,
-      redirectTo: '/snapfix',
+      redirectTo: 'https://eaiser.ai',
       user: {
         id: newUser._id,
         name: newUser.name,
@@ -126,7 +126,7 @@ router.post('/login', async (req, res) => {
 
     res.json({
       token,
-      redirectTo: '/snapfix',
+      redirectTo: 'https://eaiser.ai',
       user: {
         id: user._id,
         name: user.name,
