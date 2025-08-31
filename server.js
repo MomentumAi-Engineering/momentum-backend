@@ -1,18 +1,12 @@
-<<<<<<< HEAD
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
-=======
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
-const contactRoutes = require('./routes/Contact');
->>>>>>> 708ae4719bbc388679cef281134a7823d65cedc3
 
+// Routes
 const authRoutes = require("./routes/auth");
 const chatbotRoutes = require("./routes/chatbot");
+const contactRoutes = require("./routes/Contact");
 
 const app = express();
 
@@ -23,21 +17,14 @@ app.use(express.json());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/chatbot", chatbotRoutes);
+app.use("/api/contact", contactRoutes);
 
-<<<<<<< HEAD
+// Root Route
 app.get("/", (req, res) => {
-  res.send("Welcome to the MomntumAI Backend API 🚀");
-=======
-app.use('/api/auth', authRoutes);
-app.use('/api/contact' , contactRoutes);
-
-
-app.get('/', (req, res) => {
-  res.send('Welcome to the Momentum Backend API');
->>>>>>> 708ae4719bbc388679cef281134a7823d65cedc3
+  res.send("Welcome to the MomentumAI Backend API 🚀");
 });
 
-// MongoDB Connection (clean – no deprecated options)
+// MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB"))
@@ -50,4 +37,7 @@ app.listen(PORT, () =>
 );
 
 // Debugging: Show Redirect URI for OAuth
-console.log("👉 Expected Redirect URI:", "http://localhost:5000/api/auth/google/callback");
+console.log(
+  "👉 Expected Redirect URI:",
+  "http://localhost:5000/api/auth/google/callback"
+);
