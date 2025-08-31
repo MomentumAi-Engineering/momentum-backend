@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
+=======
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+const contactRoutes = require('./routes/Contact');
+>>>>>>> 708ae4719bbc388679cef281134a7823d65cedc3
 
 const authRoutes = require("./routes/auth");
 const chatbotRoutes = require("./routes/chatbot");
@@ -16,8 +24,17 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/chatbot", chatbotRoutes);
 
+<<<<<<< HEAD
 app.get("/", (req, res) => {
   res.send("Welcome to the MomntumAI Backend API 🚀");
+=======
+app.use('/api/auth', authRoutes);
+app.use('/api/contact' , contactRoutes);
+
+
+app.get('/', (req, res) => {
+  res.send('Welcome to the Momentum Backend API');
+>>>>>>> 708ae4719bbc388679cef281134a7823d65cedc3
 });
 
 // MongoDB Connection (clean – no deprecated options)
