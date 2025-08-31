@@ -1,32 +1,30 @@
-const sgMail = require('@sendgrid/mail');
-require('dotenv').config();
-
-console.log('FROM_EMAIL:', process.env.FROM_EMAIL); // should print no-reply@momntumai.com
-console.log('SENDGRID_API_KEY is present:', !!process.env.SENDGRID_API_KEY); // should print true
-
+const sgMail = require("@sendgrid/mail");
+require("dotenv").config();
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const FROM_EMAIL = process.env.FROM_EMAIL;
 
-const sendSignupEmail = async (to, name) => {
-  const msg = {
-    to,
-    from: process.env.FROM_EMAIL,
-    subject: 'Welcome to MomntumAi!',
-    html: `
-      <h2>Hello ${name},</h2>
-      <p>🎉 Welcome to <strong>MomntumAi</strong>! We’re excited to have you on board.</p>
-      <p>Let us know if you need anything.</p>
-      <br>
-      <p>🚀 The MomntumAi Team</p>
-    `,
-  };
-
+async function sendEmail(to, subject, htmlContent) {
+  const msg = { to, from: FROM_EMAIL, subject, html: htmlContent };
   try {
     await sgMail.send(msg);
-    console.log('Signup email sent to:', to);
+    console.log(`✅ Email sent to ${to}`);
   } catch (error) {
-    console.error('SendGrid Error:', error.response?.body || error.message);
+    console.error("❌ Error sending email:", error.response?.body || error.message);
   }
-};
+}
+
+async function sendSignupEmail(to, name) {
+  const subject = "🎉 Welcome to MomntumAI!";
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; padding: 20px;">
+      <h2>Hi ${name},</h2>
+      <p>Welcome to <b>MomntumAI</b> 🚀</p>
+      <p>We’re excited to have you onboard!</p>
+      <p style="margin-top:20px;">Cheers,<br>Team MomntumAI</p>
+    </div>
+  `;
+  await sendEmail(to, subject, htmlContent);
+}
 
 module.exports = { sendSignupEmail };
