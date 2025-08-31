@@ -1,20 +1,16 @@
+// routes/auth.js
 const express = require("express");
 const router = express.Router();
-<<<<<<< HEAD
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const axios = require("axios");
 const User = require("../models/User");
 const { sendSignupEmail } = require("../utils/emailService");
-=======
-const { sendSignupEmail } = require('../utils/emailService');
->>>>>>> 708ae4719bbc388679cef281134a7823d65cedc3
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
 
-<<<<<<< HEAD
 // ---------- Google OAuth: Redirect user to Google ----------
 router.get("/google", (req, res) => {
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -32,7 +28,6 @@ router.get("/google", (req, res) => {
 });
 
 // ---------- Google OAuth: Callback ----------
-// 🔄 Ab yeh route seedha /callback hoga (Google Console ke liye match)
 router.get("/google/callback", async (req, res) => {
   const code = req.query.code;
   if (!code) {
@@ -48,8 +43,6 @@ router.get("/google/callback", async (req, res) => {
     params.append("client_secret", GOOGLE_CLIENT_SECRET);
     params.append("redirect_uri", GOOGLE_REDIRECT_URI);
     params.append("grant_type", "authorization_code");
-
-    console.log("👉 Exchanging code for tokens with redirect_uri:", GOOGLE_REDIRECT_URI);
 
     const tokenRes = await axios.post(
       "https://oauth2.googleapis.com/token",
@@ -88,13 +81,9 @@ router.get("/google/callback", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // 🔄 Redirect to frontend OR return JSON
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
     console.log("✅ Google login successful for:", email);
     res.redirect(`${frontendUrl}?token=${token}`);
-
-    // Agar redirect nahi chahiye toh:
-    // res.json({ token, user });
   } catch (error) {
     console.error("❌ Google OAuth error:", error.response?.data || error.message);
     res.status(500).send("Google login failed");
@@ -119,6 +108,7 @@ router.post("/signup", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
     res.status(201).json({
       token,
       user: {
@@ -142,14 +132,14 @@ router.post("/login", async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
     res.json({
       token,
       user: {
@@ -162,54 +152,45 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ error: err.message });
-=======
-// ✅ Forgot password
-router.post('/forgot-password', async (req, res) => {
-  const { email } = req.body;
+  }
+});
 
+// ---------- Forgot Password ----------
+router.post("/forgot-password", async (req, res) => {
+  const { email } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Generate reset token
     const resetToken = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET || 'myverysecurekey123!@',
-      { expiresIn: '15m' }
+      process.env.JWT_SECRET || "myverysecurekey123!@",
+      { expiresIn: "15m" }
     );
 
     const resetLink = `http://localhost:5173/reset-password/${resetToken}`; 
-    // 👆 replace localhost with your frontend domain when deployed
-
-    // TODO: Send email here with resetLink
     console.log("Reset Link:", resetLink);
 
     res.json({ message: `Password reset link sent to ${email}` });
   } catch (err) {
     console.error("Forgot password error:", err);
     res.status(500).json({ message: "Server error" });
->>>>>>> 708ae4719bbc388679cef281134a7823d65cedc3
   }
 });
 
-// ✅ Reset password
-router.post('/reset-password/:token', async (req, res) => {
+// ---------- Reset Password ----------
+router.post("/reset-password/:token", async (req, res) => {
   const { token } = req.params;
   const { password } = req.body;
 
   try {
-    // Verify token
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET || 'myverysecurekey123!@'
+      process.env.JWT_SECRET || "myverysecurekey123!@"
     );
 
-    // Hash new password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Update user’s password
     await User.findByIdAndUpdate(decoded.id, { password: hashedPassword });
 
     res.json({ message: "Password has been reset successfully!" });
@@ -218,3 +199,5 @@ router.post('/reset-password/:token', async (req, res) => {
     res.status(400).json({ message: "Invalid or expired token" });
   }
 });
+
+module.exports = router;
