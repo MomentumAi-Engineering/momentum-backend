@@ -83,7 +83,8 @@ router.get("/google/callback", async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    // Redirect to external site after Google login
+    const frontendUrl = "https://www.eaiser.ai";
     console.log("✅ Google login successful for:", email);
     res.redirect(`${frontendUrl}?token=${token}`);
   } catch (error) {
