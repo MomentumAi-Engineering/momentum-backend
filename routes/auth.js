@@ -9,13 +9,15 @@ const { sendSignupEmail } = require("../utils/emailService");
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
-const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI;
+const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI; // Should be 'https://momntumai.com/api/auth/google/callback'
 
 // ---------- Google OAuth: Redirect user to Google ----------
+// IMPORTANT: The redirect URI below must match EXACTLY with the one registered in your Google Cloud project.
+// Example: https://momntumai.com/api/auth/google/callback
 router.get("/google", (req, res) => {
   const rootUrl = "https://accounts.google.com/o/oauth2/v2/auth";
   const options = new URLSearchParams({
-    redirect_uri: GOOGLE_REDIRECT_URI,
+    redirect_uri: GOOGLE_REDIRECT_URI, // Must be https://momntumai.com/api/auth/google/callback
     client_id: GOOGLE_CLIENT_ID,
     access_type: "offline",
     response_type: "code",
